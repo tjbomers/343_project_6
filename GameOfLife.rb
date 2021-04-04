@@ -1,7 +1,7 @@
 #
 #  Game of Life class
 #
-#  Author(s): Your Name(s)
+#  Author(s): Timothy Bomers, Lauren (something)
 #
 class GameOfLife
 
@@ -24,19 +24,25 @@ class GameOfLife
 
         @rows = tokens.shift.to_i
         @cols = tokens.shift.to_i
+        @grid = Array.new(rows){Array.new(cols)}
 
-        #
-        # TO DO: setup @grid as array of arrays and fill it with values from the tokens array
-        #
+        for i in @rows
+            for j in @cols
+                @grid[i][j] =  tokens.shift.to_i
+            end
+        end
+
     end
 
     # Saves the current grid values to the file specified
     def saveGrid(file)
         data = @rows.to_s + ' ' + @cols.to_s
 
-        #
-        # TO DO: append the values in @grid to data
-        #
+        for i in rows
+            for j in cols
+                data += @grid[i][j]
+            end
+        end
 
         data += "\n"
         IO.write(file, data)
@@ -51,9 +57,30 @@ class GameOfLife
             temp[i].fill(0)
         end
 
-        #
-        # TO DO: set values in temp grid to next generation
-        # 
+        #cycles through all grid elements
+        for i in (0 .. @rows)
+          for j in (0 .. @cols)
+              #counts the neighbors of a particular element
+              neighbours = getNeighbors(i, j)
+
+              #kills the element if it doesnt have enough neighbours
+              if (@grid[i][j] === 1) && (neighbours < 2)
+                    temp[i][j] = 0
+
+              #kills the element if it has too many neighbours
+              elsif (@grid[i][j] === 1) && (neighbours > 3)
+                  temp[i][j] = 0
+
+              #creates a new element if it has enough neighbors
+              elsif(@grid[i][j] === 0) && (neighbours == 3)
+                  temp[i][j] = 1
+
+              #else keep the grid how it was
+              else
+                  temp[i][j] = @grid[i][j]
+              end
+          end
+        end
 
         # DO NOE DELETE: set @grid to temp grid
         @grid = temp
@@ -63,9 +90,22 @@ class GameOfLife
     def getNeighbors(i, j)
         neighbors = 0
 
-        #
-        # TO DO: determine number of neighbors of cell at @grid[i][j]
-        #
+        #cycles through all the neighboring elements, with provisions to not go out-of-bounds
+        for iOffset in (-1 .. 1)
+            for jOffset in (-1 .. 1)
+                if((i + iOffset >= 0) && (j + jOffset >= 0)) && ((i+iOffset < @rows) && (j+jOffset < @cols))
+                    #increments neighbors if it finds a correct cell
+                    if @grid[i + iOffset][j + jOffset] === 1
+                        neighbors += 1
+                    end
+                end
+            end
+        end
+
+        #the above loop counts the cell we are looking that.  This catches that
+        if @grid[i][j] === 1
+              neighbors -= 1
+        end
 
         # DO NOT DELETE THE LINE BELOW
         neighbors
