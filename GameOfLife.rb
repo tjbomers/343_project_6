@@ -1,7 +1,7 @@
 #
 #  Game of Life class
 #
-#  Author(s): Timothy Bomers, Lauren (something)
+#  Author(s): Timothy Bomers, Lauren Freeman
 #
 class GameOfLife
 
@@ -24,10 +24,10 @@ class GameOfLife
 
         @rows = tokens.shift.to_i
         @cols = tokens.shift.to_i
-        @grid = Array.new(rows){Array.new(cols)}
+        @grid = Array.new(@rows){Array.new(@cols)}
 
-        for i in @rows
-            for j in @cols
+        for i in (0...@rows)
+            for j in (0...@cols)
                 @grid[i][j] =  tokens.shift.to_i
             end
         end
@@ -38,9 +38,9 @@ class GameOfLife
     def saveGrid(file)
         data = @rows.to_s + ' ' + @cols.to_s
 
-        for i in rows
-            for j in cols
-                data += @grid[i][j]
+        for i in 0...@rows
+            for j in 0...@cols
+                data += ' ' + @grid[i][j].to_s
             end
         end
 
@@ -58,8 +58,8 @@ class GameOfLife
         end
 
         #cycles through all grid elements
-        for i in (0 .. @rows)
-          for j in (0 .. @cols)
+        for i in (0...@rows)
+          for j in (0...@cols)
               #counts the neighbors of a particular element
               neighbours = getNeighbors(i, j)
 
@@ -91,8 +91,8 @@ class GameOfLife
         neighbors = 0
 
         #cycles through all the neighboring elements, with provisions to not go out-of-bounds
-        for iOffset in (-1 .. 1)
-            for jOffset in (-1 .. 1)
+        for iOffset in (-1..1)
+            for jOffset in (-1..1)
                 if((i + iOffset >= 0) && (j + jOffset >= 0)) && ((i+iOffset < @rows) && (j+jOffset < @cols))
                     #increments neighbors if it finds a correct cell
                     if @grid[i + iOffset][j + jOffset] === 1
@@ -126,5 +126,4 @@ class GameOfLife
         end
         str
     end
-
 end
